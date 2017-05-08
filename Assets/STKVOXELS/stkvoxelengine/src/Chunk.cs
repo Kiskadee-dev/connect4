@@ -12,7 +12,7 @@ public class Chunk : MonoBehaviour
 
     private Block[, ,] blocks = new Block[chunkSize, chunkSize, chunkSize];
 
-    public static int chunkSize = 16;
+    public static int chunkSize = 4;
     public bool update = true;
 
     MeshFilter filter;
