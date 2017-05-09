@@ -8,7 +8,7 @@ public class Block
 	public bool ignorethisblockforocclusion;
 
     public struct Tile { public int x; public int y;}
-    const float tileSize = 0.1248f;
+    const float tileSize = 0.125f;
 
 	public string blocktipe { get; set; }
 	public string color = "default";

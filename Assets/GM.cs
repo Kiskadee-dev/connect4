@@ -10,9 +10,7 @@ public class GM : MonoBehaviour {
 		Chunk schunk = voxelload.CreateChunk (world, new Vector3 (1, 1, 1));
 		for (int x = -size; x < size; x++) {
 			for (int z = -size; z < size; z++) {
-				world.SetBlock ((int)(schunk.transform.position.x + x),(int)(schunk.transform.position.y),(int)(schunk.transform.position.z + z), new BlockGrass());
-				Debug.Log ("Setting block?");
-
+				world.SetBlock ((int)(schunk.transform.position.x + x),(int)(schunk.transform.position.y),(int)(schunk.transform.position.z + z), new BlockNeutro());
 			}
 		}
 	}

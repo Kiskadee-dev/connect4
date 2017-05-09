@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class InputManager : MonoBehaviour {
-
+	public bool Team = true;
 	// Use this for initialization
 	void Start () {
 		
@@ -17,7 +17,15 @@ public class InputManager : MonoBehaviour {
 			if(Physics.Raycast(ray,out hit)){
 				Block bloco = VoxelTerrain.GetBlock (hit);
 				if (bloco != null) {
-					VoxelTerrain.SetBlock (hit, new Blockmetade ());
+					if (Team) {
+						if (bloco.blocktipe == "Neutro") {
+							VoxelTerrain.SetBlock (hit, new BlockAzul ());
+						}
+					} else {
+						if (bloco.blocktipe == "Neutro") {
+							VoxelTerrain.SetBlock (hit, new BlockVermelho ());
+						}
+					}
 				}
 			}
 		}
