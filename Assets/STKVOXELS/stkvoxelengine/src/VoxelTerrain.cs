@@ -47,14 +47,14 @@ public static class VoxelTerrain {
 		Chunk chunk = hit.collider.GetComponent<Chunk>();
 		if (chunk == null)
 			return null;
-
+		/*
 			if (chunk.gameObject.transform.position.z + checkifchunkbounds.z == 16) {
 			Debug.Log ("Final do chunk atingido " + chunk.gameObject.transform.position.z + checkifchunkbounds.z.ToString ());
 			Debug.Log (checkifchunkbounds.x.ToString ());
 			return null;
 		}
 		Debug.Log (checkifchunkbounds.z.ToString ());
-
+*/
 
 
 		WorldPos pos = GetBlockPos(hit, adjacent);
