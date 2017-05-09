@@ -4,7 +4,13 @@ using UnityEngine;
 
 public class InputManager : MonoBehaviour {
 	public bool Team = true;
+	public int range = 3;
+	public GM GameManager;
 	// Use this for initialization
+	void Awake(){
+		GameManager = GameObject.Find ("GM").GetComponent<GM> ();
+	}
+
 	void Start () {
 		
 	}
@@ -17,17 +23,317 @@ public class InputManager : MonoBehaviour {
 			if(Physics.Raycast(ray,out hit)){
 				Block bloco = VoxelTerrain.GetBlock (hit);
 				if (bloco != null) {
+					WorldPos pos = VoxelTerrain.GetBP (hit);
 					if (Team) {
 						if (bloco.blocktipe == "Neutro") {
-							VoxelTerrain.SetBlock (hit, new BlockAzul ());
+							Block colocado = VoxelTerrain.SetBlock (hit, new BlockAzul{blockposition = new Vector3(pos.x,pos.y,pos.z)});
+							int me = 1;
+
+							int hor = Horizontal (colocado, "Azul");
+							int vert = Vertical (colocado, "Azul");
+							int diag = Diagonal (colocado, "Azul");
+
+
+							int total = me +hor +vert+diag; //+ adjDiagLdown;
+							Debug.Log(hor +","+vert+","+diag);
+							Debug.Log (total);
 						}
 					} else {
 						if (bloco.blocktipe == "Neutro") {
-							VoxelTerrain.SetBlock (hit, new BlockVermelho ());
+							VoxelTerrain.SetBlock (hit, new BlockVermelho {blockposition = new Vector3(pos.x,pos.y,pos.z)});
 						}
 					}
 				}
 			}
 		}
+	}
+
+
+	public int Horizontal(Block colocado,string time){
+		int adjr = WinConditionRight (colocado,time) -1;
+		int adjl = WinConditionLeft (colocado, time) -1;
+
+		int soma = adjr + adjl;
+		if (soma < 0) {
+			soma = 0;
+		}
+		return soma;
+	}
+	public int Vertical(Block colocado,string time){
+		int adjup = WinConditionUp (colocado, time) -1;
+		int adjdown = WinConditionDown (colocado, time) -1;
+
+		int soma = adjup + adjdown;
+		if (soma < 0) {
+			soma = 0;
+		}
+		return soma;
+	}
+
+	public int Diagonal(Block colocado,string time){
+		int adjDiagRup = WinConditionDiagRight (colocado, "Azul") -1;
+		int adjDiagRdown = WinConditionDiagDownRight (colocado, "Azul") -1;
+
+		int soma1 = adjDiagRup + adjDiagRdown;
+		if (soma1 < 0) {
+			soma1 = 0;
+		}
+
+		int adjDiagLup = WinConditionDiagLeft (colocado, "Azul") -1;
+		int adjDiagLdown = WinConditionDiagDownLeft (colocado, "Azul") - 1;
+	
+		int soma2 = adjDiagLup + adjDiagLdown;
+		if (soma2 < 0) {
+			soma2 = 0;
+		}
+
+		Debug.Log (soma1 + "," + soma2);
+
+		int result = soma1 + soma2;
+		return result;
+	
+	}
+
+
+
+
+
+	public int WinConditionRight(Block bloco, string team){
+		int AdjacentRight = 0;
+		Vector3 pos = bloco.blockposition;
+		//Right
+		for (int i = (int)pos.x; i < (int)pos.x+range; i++) {
+			Vector3 CheckNeighbours;
+			CheckNeighbours = new Vector3 (i, pos.y, pos.z);
+			Block vizinho = GameManager.world.GetBlock ((int)CheckNeighbours.x, (int)CheckNeighbours.y, (int)CheckNeighbours.z);
+			if (vizinho != null) {
+				if (vizinho.blocktipe != "Neutro") {
+					if (vizinho.blocktipe != "ar") {
+						if (vizinho.blocktipe != team) {
+							return AdjacentRight;
+						}
+						AdjacentRight++;
+
+					}
+				} else {
+					return AdjacentRight;
+				}
+			}
+		}
+		return AdjacentRight;
+
+	}
+
+	public int WinConditionLeft(Block bloco, string team){
+		int AdjacentLeft = 0;
+		Vector3 pos = bloco.blockposition;
+		//Right
+		for (int i = (int)pos.x; i > (int)pos.x-range; i--) {
+			Vector3 CheckNeighbours;
+			CheckNeighbours = new Vector3 (i, pos.y, pos.z);
+			Block vizinho = GameManager.world.GetBlock ((int)CheckNeighbours.x, (int)CheckNeighbours.y, (int)CheckNeighbours.z);
+			if (vizinho != null) {
+				if (vizinho.blocktipe != "Neutro") {
+					if (vizinho.blocktipe != "ar") {
+						if (vizinho.blocktipe != team) {
+							return AdjacentLeft;
+						}
+						AdjacentLeft++;
+
+					}
+				} else {
+					return AdjacentLeft;
+				}
+			}
+		}
+		return AdjacentLeft;
+
+	}
+
+	public int WinConditionUp(Block bloco, string team){
+		int AdjacentUp = 0;
+		Vector3 pos = bloco.blockposition;
+		//Right
+		for (int i = (int)pos.z; i < (int)pos.z+range; i++) {
+			Vector3 CheckNeighbours;
+			CheckNeighbours = new Vector3 (pos.x, pos.y, i);
+			Block vizinho = GameManager.world.GetBlock ((int)CheckNeighbours.x, (int)CheckNeighbours.y, (int)CheckNeighbours.z);
+			if (vizinho != null) {
+				if (vizinho.blocktipe != "Neutro") {
+					if (vizinho.blocktipe != "ar") {
+						if (vizinho.blocktipe != team) {
+							return AdjacentUp;
+						}
+						AdjacentUp++;
+
+					}
+				} else {
+					return AdjacentUp;
+				}
+			}
+		}
+		return AdjacentUp;
+
+	}
+
+	public int WinConditionDown(Block bloco, string team){
+		int AdjacentDown = 0;
+		Vector3 pos = bloco.blockposition;
+		//Right
+		for (int i = (int)pos.z; i > (int)pos.z-range; i--) {
+			Vector3 CheckNeighbours;
+			CheckNeighbours = new Vector3 (pos.x, pos.y, i);
+			Block vizinho = GameManager.world.GetBlock ((int)CheckNeighbours.x, (int)CheckNeighbours.y, (int)CheckNeighbours.z);
+			if (vizinho != null) {
+				if (vizinho.blocktipe != "Neutro") {
+					if (vizinho.blocktipe != "ar") {
+						if (vizinho.blocktipe != team) {
+							return AdjacentDown;
+						}
+						AdjacentDown++;
+
+					}
+				} else {
+					return AdjacentDown;
+				}
+			}
+		}
+		return AdjacentDown;
+
+	}
+
+
+
+
+	public int WinConditionDiagRight(Block bloco, string team){
+		int AdjacentRight = 0;
+		Vector3 pos = bloco.blockposition;
+		//Right
+		int z = (int)pos.z -1;
+		for (int i = (int)pos.x; i < (int)pos.x + range; i++) {
+			z++;
+				Vector3 CheckNeighbours;
+			CheckNeighbours = new Vector3 (i, pos.y, z);
+			Debug.Log (CheckNeighbours);
+				Block vizinho = GameManager.world.GetBlock ((int)CheckNeighbours.x, (int)CheckNeighbours.y, (int)CheckNeighbours.z);
+				if (vizinho != null) {
+					if (vizinho.blocktipe != "Neutro") {
+						if (vizinho.blocktipe != "ar") {
+							if (vizinho.blocktipe != team) {
+								return AdjacentRight;
+							}
+							AdjacentRight++;
+
+						}
+					} else {
+						return AdjacentRight;
+					}
+				}
+			}
+
+		return AdjacentRight;
+
+	}
+
+
+	public int WinConditionDiagDownRight(Block bloco, string team){
+		int AdjacentRight = 0;
+		Vector3 pos = bloco.blockposition;
+		//Right
+		int z = (int)pos.z +1;
+		for (int i = (int)pos.x; i > (int)pos.x - range; i--) {
+			z--;
+			Vector3 CheckNeighbours;
+			CheckNeighbours = new Vector3 (i, pos.y, z);
+			Block vizinho = GameManager.world.GetBlock ((int)CheckNeighbours.x, (int)CheckNeighbours.y, (int)CheckNeighbours.z);
+			if (vizinho != null) {
+				if (vizinho.blocktipe != "Neutro") {
+					if (vizinho.blocktipe != "ar") {
+						if (vizinho.blocktipe != team) {
+							return AdjacentRight;
+						}
+						AdjacentRight++;
+
+					}
+				} else {
+					return AdjacentRight;
+				}
+			}
+		}
+
+		return AdjacentRight;
+
+	}
+
+
+
+
+
+
+
+
+
+
+	public int WinConditionDiagLeft(Block bloco, string team){
+		int AdjacentRight = 0;
+		Vector3 pos = bloco.blockposition;
+		//Left
+		int z = (int)pos.z -1;
+		for (int i = (int)pos.x; i > (int)pos.x-range; i--) {
+			z++;
+				Vector3 CheckNeighbours;
+				CheckNeighbours = new Vector3 (i, pos.y, z);
+				Block vizinho = GameManager.world.GetBlock ((int)CheckNeighbours.x, (int)CheckNeighbours.y, (int)CheckNeighbours.z);
+				if (vizinho != null) {
+
+					if (vizinho.blocktipe != "Neutro") {
+						if (vizinho.blocktipe != "ar") {
+						Debug.Log (vizinho.blocktipe);
+
+							if (vizinho.blocktipe != team) {
+								return AdjacentRight;
+							}
+							AdjacentRight++;
+						}
+					} else {
+						return AdjacentRight;
+					}
+				}
+			}
+
+
+		return AdjacentRight;
+
+	}
+
+
+	public int WinConditionDiagDownLeft(Block bloco, string team){
+		int AdjacentRight = 0;
+		Vector3 pos = bloco.blockposition;
+		//Left
+		int z = (int)pos.z +1;
+
+		for (int i = (int)pos.x; i < (int)pos.x + range; i++) {
+			z--;
+			Vector3 CheckNeighbours;
+			CheckNeighbours = new Vector3 (i, pos.y, z);
+			Block vizinho = GameManager.world.GetBlock ((int)CheckNeighbours.x, (int)CheckNeighbours.y, (int)CheckNeighbours.z);
+			if (vizinho != null) {
+				if (vizinho.blocktipe != "Neutro") {
+					if (vizinho.blocktipe != "ar") {
+						if (vizinho.blocktipe != team) {
+							return AdjacentRight;
+						}
+						AdjacentRight++;
+
+					}
+				} else {
+					return AdjacentRight;
+				}
+			}
+		}
+
+		return AdjacentRight;
+
 	}
 }

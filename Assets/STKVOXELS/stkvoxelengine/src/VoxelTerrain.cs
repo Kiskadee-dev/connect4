@@ -63,6 +63,10 @@ public static class VoxelTerrain {
 
 		return block;
 	}
+	public static WorldPos GetBP(RaycastHit hit, bool adjacent = false){
+		WorldPos pos = GetBlockPos(hit, adjacent);
+		return pos;
+	}
 	//verifique se a coordenada é correta antes de usar, caso contrário blocos podem substituir outros.
 
 
