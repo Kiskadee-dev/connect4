@@ -5,6 +5,11 @@ using UnityEngine;
 public class InputManager : MonoBehaviour {
 	public bool Team = true;
 	public int range = 3;
+	public int numplaced;
+	public int numMax = 16;
+	public bool Player1Won;
+	public bool Player2Won;
+
 	public GM GameManager;
 	// Use this for initialization
 	void Awake(){
@@ -18,31 +23,68 @@ public class InputManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.Mouse0)) {
+				
 			RaycastHit hit;
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			if(Physics.Raycast(ray,out hit)){
+			if (Physics.Raycast (ray, out hit)) {
 				Block bloco = VoxelTerrain.GetBlock (hit);
 				if (bloco != null) {
 					WorldPos pos = VoxelTerrain.GetBP (hit);
 					if (Team) {
 						if (bloco.blocktipe == "Neutro") {
-							Block colocado = VoxelTerrain.SetBlock (hit, new BlockAzul{blockposition = new Vector3(pos.x,pos.y,pos.z)});
+							Block colocado = VoxelTerrain.SetBlock (hit, new BlockAzul{ blockposition = new Vector3 (pos.x, pos.y, pos.z) });
+							numplaced++;
 							int me = 1;
-
 							int hor = Horizontal (colocado, "Azul");
 							int vert = Vertical (colocado, "Azul");
 							int diag = Diagonal (colocado, "Azul");
 
+							if (hor+me == 4 || vert+me == 4 || diag+me == 4) {
+								Debug.Log ("Player 1 vence"+hor +","+vert +","+diag);
+								Player1Won = true;
+							}
 
-							int total = me +hor +vert+diag; //+ adjDiagLdown;
-							Debug.Log(hor +","+vert+","+diag);
-							Debug.Log (total);
+							int total = me + hor + vert + diag; //+ adjDiagLdown;
+
+							Team = !Team;
+							if (Team) {
+								Debug.Log ("Player 1 turn (blue)");
+							} else {
+								Debug.Log ("Player 2 turn (red)");
+
+							}
 						}
 					} else {
 						if (bloco.blocktipe == "Neutro") {
-							VoxelTerrain.SetBlock (hit, new BlockVermelho {blockposition = new Vector3(pos.x,pos.y,pos.z)});
+							Block colocado = VoxelTerrain.SetBlock (hit, new BlockVermelho{ blockposition = new Vector3 (pos.x, pos.y, pos.z) });
+							numplaced++;
+							int me = 1;
+							int hor = Horizontal (colocado, "Vermelho");
+							int vert = Vertical (colocado, "Vermelho");
+							int diag = Diagonal (colocado, "Vermelho");
+
+							if (hor+me == 4 || vert+me == 4 || diag+me == 4) {
+								Debug.Log ("Player 2 vence"+hor +","+vert +","+diag);
+								Player2Won = true;
+							}
+							int total = me + hor + vert + diag; //+ adjDiagLdown;						}
+						
+							Team = !Team;
+							if (Team) {
+								Debug.Log ("Player 1 turn (blue)");
+							} else {
+								Debug.Log ("Player 2 turn (red)");
+
+							}
+
 						}
 					}
+
+				}
+			}
+			if (numplaced == numMax) {
+				if (!Player1Won && !Player2Won) {
+					Debug.Log ("Empate");
 				}
 			}
 		}
@@ -71,23 +113,22 @@ public class InputManager : MonoBehaviour {
 	}
 
 	public int Diagonal(Block colocado,string time){
-		int adjDiagRup = WinConditionDiagRight (colocado, "Azul") -1;
-		int adjDiagRdown = WinConditionDiagDownRight (colocado, "Azul") -1;
+		int adjDiagRup = WinConditionDiagRight (colocado, time) -1;
+		int adjDiagRdown = WinConditionDiagDownRight (colocado, time) -1;
 
 		int soma1 = adjDiagRup + adjDiagRdown;
 		if (soma1 < 0) {
 			soma1 = 0;
 		}
 
-		int adjDiagLup = WinConditionDiagLeft (colocado, "Azul") -1;
-		int adjDiagLdown = WinConditionDiagDownLeft (colocado, "Azul") - 1;
+		int adjDiagLup = WinConditionDiagLeft (colocado, time) -1;
+		int adjDiagLdown = WinConditionDiagDownLeft (colocado, time) - 1;
 	
 		int soma2 = adjDiagLup + adjDiagLdown;
 		if (soma2 < 0) {
 			soma2 = 0;
 		}
 
-		Debug.Log (soma1 + "," + soma2);
 
 		int result = soma1 + soma2;
 		return result;
@@ -214,7 +255,6 @@ public class InputManager : MonoBehaviour {
 			z++;
 				Vector3 CheckNeighbours;
 			CheckNeighbours = new Vector3 (i, pos.y, z);
-			Debug.Log (CheckNeighbours);
 				Block vizinho = GameManager.world.GetBlock ((int)CheckNeighbours.x, (int)CheckNeighbours.y, (int)CheckNeighbours.z);
 				if (vizinho != null) {
 					if (vizinho.blocktipe != "Neutro") {
@@ -288,7 +328,6 @@ public class InputManager : MonoBehaviour {
 
 					if (vizinho.blocktipe != "Neutro") {
 						if (vizinho.blocktipe != "ar") {
-						Debug.Log (vizinho.blocktipe);
 
 							if (vizinho.blocktipe != team) {
 								return AdjacentRight;
