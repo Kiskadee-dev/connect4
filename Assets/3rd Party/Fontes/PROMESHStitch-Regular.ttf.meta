@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 2a1a40f6b8b28cc42ac23861a95a8146
+timeCreated: 1494437695
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: PROMESH Stitch
+  fontNames:
+  - PROMESH Stitch
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
