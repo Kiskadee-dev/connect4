@@ -8,6 +8,10 @@ public class GM : MonoBehaviour {
 	public int size;
 	// Use this for initialization
 	void Start () {
+		CriarTabuleiro ();
+	}
+	
+	public void CriarTabuleiro(){
 		WorkChunk = voxelload.CreateChunk (world, new Vector3 (1, 1, 1));
 		for (int x = -size; x < size; x++) {
 			for (int z = -size; z < size; z++) {
@@ -15,9 +19,9 @@ public class GM : MonoBehaviour {
 			}
 		}
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+	public void RecriarTabuleiro(){
+		Destroy (WorkChunk.gameObject);
+		world.chunks.Clear ();
+		CriarTabuleiro ();
 	}
 }
