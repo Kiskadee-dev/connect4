@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
+using UnityEngine.UI;
 public class InputManager : MonoBehaviour {
 	public bool Team = true;
 	public int range = 3;
@@ -13,6 +13,8 @@ public class InputManager : MonoBehaviour {
 
 	public int Player1Score = 0;
 	public int Player2Score = 0;
+	public Text PScore1UI;
+	public Text PScore2UI;
 	public GM GameManager;
 	// Use this for initialization
 	void Awake(){
@@ -47,6 +49,7 @@ public class InputManager : MonoBehaviour {
 										Debug.Log ("Player 1 vence" + hor + "," + vert + "," + diag);
 										Player1Won = true;
 										Player1Score++;
+										PScore1UI.text = Player1Score.ToString ();
 									}
 
 									int total = me + hor + vert + diag; //+ adjDiagLdown;
@@ -72,6 +75,7 @@ public class InputManager : MonoBehaviour {
 										Debug.Log ("Player 2 vence" + hor + "," + vert + "," + diag);
 										Player2Won = true;
 										Player2Score++;
+										PScore2UI.text = Player2Score.ToString ();
 									}
 									int total = me + hor + vert + diag; //+ adjDiagLdown;						}
 						
