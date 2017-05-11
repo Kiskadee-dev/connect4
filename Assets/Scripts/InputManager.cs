@@ -15,6 +15,10 @@ public class InputManager : MonoBehaviour {
 	public int Player2Score = 0;
 	public Text PScore1UI;
 	public Text PScore2UI;
+
+	public Text Player1NotifyWon;
+	public Text Player2NotifyWon;
+
 	public GM GameManager;
 	// Use this for initialization
 	void Awake(){
@@ -50,6 +54,8 @@ public class InputManager : MonoBehaviour {
 										Player1Won = true;
 										Player1Score++;
 										PScore1UI.text = Player1Score.ToString ();
+										Player1NotifyWon.gameObject.SetActive (true);
+										StartCoroutine(RestartGameTimed ());
 									}
 
 									int total = me + hor + vert + diag; //+ adjDiagLdown;
@@ -76,6 +82,8 @@ public class InputManager : MonoBehaviour {
 										Player2Won = true;
 										Player2Score++;
 										PScore2UI.text = Player2Score.ToString ();
+										Player2NotifyWon.gameObject.SetActive (true);
+										StartCoroutine (RestartGameTimed ());
 									}
 									int total = me + hor + vert + diag; //+ adjDiagLdown;						}
 						
@@ -101,8 +109,13 @@ public class InputManager : MonoBehaviour {
 			}
 		}
 	}
-
+	public IEnumerator RestartGameTimed(){
+		yield return new WaitForSeconds (4);
+		RestartGame ();
+	}
 	public void RestartGame(){
+		Player1NotifyWon.gameObject.SetActive (false);
+		Player2NotifyWon.gameObject.SetActive (false);
 		numplaced = 0;
 		Player1Won = false;
 		Player2Won = false;
