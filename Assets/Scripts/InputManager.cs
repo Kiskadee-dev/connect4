@@ -18,6 +18,10 @@ public class InputManager : MonoBehaviour {
 
 	public Text Player1NotifyWon;
 	public Text Player2NotifyWon;
+	public Text EmpateNotify;
+
+	public Text Player1TurnUI;
+	public Text Player2TurnUI;
 
 	public GM GameManager;
 	// Use this for initialization
@@ -31,6 +35,13 @@ public class InputManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (Team) {
+			Player2TurnUI.gameObject.SetActive (false);
+			Player1TurnUI.gameObject.SetActive (true);
+		} else {
+			Player2TurnUI.gameObject.SetActive (true);
+			Player1TurnUI.gameObject.SetActive (false);
+		}
 		if (Input.GetKeyDown (KeyCode.Mouse0)) {
 			if (!EventSystem.current.IsPointerOverGameObject ()) {
 				if (!Player1Won && !Player2Won) {
@@ -41,6 +52,7 @@ public class InputManager : MonoBehaviour {
 						if (bloco != null) {
 							WorldPos pos = VoxelTerrain.GetBP (hit);
 							if (Team) {
+								
 								if (bloco.blocktipe == "Neutro") {
 									Block colocado = VoxelTerrain.SetBlock (hit, new BlockAzul{ blockposition = new Vector3 (pos.x, pos.y, pos.z) });
 									numplaced++;
@@ -103,6 +115,8 @@ public class InputManager : MonoBehaviour {
 					if (numplaced == numMax) {
 						if (!Player1Won && !Player2Won) {
 							Debug.Log ("Empate");
+							EmpateNotify.gameObject.SetActive (true);
+							StartCoroutine (RestartGameTimed ());
 						}
 					}
 				}
@@ -116,6 +130,7 @@ public class InputManager : MonoBehaviour {
 	public void RestartGame(){
 		Player1NotifyWon.gameObject.SetActive (false);
 		Player2NotifyWon.gameObject.SetActive (false);
+		EmpateNotify.gameObject.SetActive (false);
 		numplaced = 0;
 		Player1Won = false;
 		Player2Won = false;
