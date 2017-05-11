@@ -11,6 +11,8 @@ public class InputManager : MonoBehaviour {
 	public bool Player1Won;
 	public bool Player2Won;
 
+	public int Player1Score = 0;
+	public int Player2Score = 0;
 	public GM GameManager;
 	// Use this for initialization
 	void Awake(){
@@ -44,6 +46,7 @@ public class InputManager : MonoBehaviour {
 									if (hor + me == 4 || vert + me == 4 || diag + me == 4) {
 										Debug.Log ("Player 1 vence" + hor + "," + vert + "," + diag);
 										Player1Won = true;
+										Player1Score++;
 									}
 
 									int total = me + hor + vert + diag; //+ adjDiagLdown;
@@ -68,6 +71,7 @@ public class InputManager : MonoBehaviour {
 									if (hor + me == 4 || vert + me == 4 || diag + me == 4) {
 										Debug.Log ("Player 2 vence" + hor + "," + vert + "," + diag);
 										Player2Won = true;
+										Player2Score++;
 									}
 									int total = me + hor + vert + diag; //+ adjDiagLdown;						}
 						
@@ -98,6 +102,7 @@ public class InputManager : MonoBehaviour {
 		numplaced = 0;
 		Player1Won = false;
 		Player2Won = false;
+		Team = true;
 		GameManager.RecriarTabuleiro ();
 	}
 
