@@ -87,7 +87,7 @@ public static class VoxelTerrain {
 	{
 		Chunk chunk = hit.collider.GetComponent<Chunk>();
 		if (chunk == null) {
-			Debug.Log ("NO CHUNK!");
+//			Debug.Log ("NO CHUNK!");
 			return null;
 		}
 		WorldPos pos = GetBlockPos(hit, adjacent);

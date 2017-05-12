@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -23,6 +24,7 @@ public class InputManager : MonoBehaviour {
 	public Text Player1TurnUI;
 	public Text Player2TurnUI;
 
+	public OpenOptions Options;
 	public GM GameManager;
 	// Use this for initialization
 	void Awake(){
@@ -43,80 +45,82 @@ public class InputManager : MonoBehaviour {
 			Player1TurnUI.gameObject.SetActive (false);
 		}
 		if (Input.GetKeyDown (KeyCode.Mouse0)) {
-			if (!EventSystem.current.IsPointerOverGameObject ()) {
-				if (!Player1Won && !Player2Won) {
-					RaycastHit hit;
-					Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-					if (Physics.Raycast (ray, out hit)) {
-						Block bloco = VoxelTerrain.GetBlock (hit);
-						if (bloco != null) {
-							WorldPos pos = VoxelTerrain.GetBP (hit);
-							if (Team) {
+			if (!Options.opened) {
+				if (!EventSystem.current.IsPointerOverGameObject ()) {
+					if (!Player1Won && !Player2Won) {
+						RaycastHit hit;
+						Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+						if (Physics.Raycast (ray, out hit)) {
+							Block bloco = VoxelTerrain.GetBlock (hit);
+							if (bloco != null) {
+								WorldPos pos = VoxelTerrain.GetBP (hit);
+								if (Team) {
 								
-								if (bloco.blocktipe == "Neutro") {
-									Block colocado = VoxelTerrain.SetBlock (hit, new BlockAzul{ blockposition = new Vector3 (pos.x, pos.y, pos.z) });
-									numplaced++;
-									int me = 1;
-									int hor = Horizontal (colocado, "Azul");
-									int vert = Vertical (colocado, "Azul");
-									int diag = Diagonal (colocado, "Azul");
+									if (bloco.blocktipe == "Neutro") {
+										Block colocado = VoxelTerrain.SetBlock (hit, new BlockAzul{ blockposition = new Vector3 (pos.x, pos.y, pos.z) });
+										numplaced++;
+										int me = 1;
+										int hor = Horizontal (colocado, "Azul");
+										int vert = Vertical (colocado, "Azul");
+										int diag = Diagonal (colocado, "Azul");
 
-									if (hor + me == 4 || vert + me == 4 || diag + me == 4) {
-										Debug.Log ("Player 1 vence" + hor + "," + vert + "," + diag);
-										Player1Won = true;
-										Player1Score++;
-										PScore1UI.text = Player1Score.ToString ();
-										Player1NotifyWon.gameObject.SetActive (true);
-										StartCoroutine(RestartGameTimed ());
+										if (hor + me == 4 || vert + me == 4 || diag + me == 4) {
+											Debug.Log ("Player 1 vence" + hor + "," + vert + "," + diag);
+											Player1Won = true;
+											Player1Score++;
+											PScore1UI.text = Player1Score.ToString ();
+											Player1NotifyWon.gameObject.SetActive (true);
+											StartCoroutine (RestartGameTimed ());
+										}
+
+										int total = me + hor + vert + diag; //+ adjDiagLdown;
+
+										Team = !Team;
+										if (Team) {
+											Debug.Log ("Player 1 turn (blue)");
+										} else {
+											Debug.Log ("Player 2 turn (red)");
+
+										}
 									}
+								} else {
+									if (bloco.blocktipe == "Neutro") {
+										Block colocado = VoxelTerrain.SetBlock (hit, new BlockVermelho{ blockposition = new Vector3 (pos.x, pos.y, pos.z) });
+										numplaced++;
+										int me = 1;
+										int hor = Horizontal (colocado, "Vermelho");
+										int vert = Vertical (colocado, "Vermelho");
+										int diag = Diagonal (colocado, "Vermelho");
 
-									int total = me + hor + vert + diag; //+ adjDiagLdown;
-
-									Team = !Team;
-									if (Team) {
-										Debug.Log ("Player 1 turn (blue)");
-									} else {
-										Debug.Log ("Player 2 turn (red)");
-
-									}
-								}
-							} else {
-								if (bloco.blocktipe == "Neutro") {
-									Block colocado = VoxelTerrain.SetBlock (hit, new BlockVermelho{ blockposition = new Vector3 (pos.x, pos.y, pos.z) });
-									numplaced++;
-									int me = 1;
-									int hor = Horizontal (colocado, "Vermelho");
-									int vert = Vertical (colocado, "Vermelho");
-									int diag = Diagonal (colocado, "Vermelho");
-
-									if (hor + me == 4 || vert + me == 4 || diag + me == 4) {
-										Debug.Log ("Player 2 vence" + hor + "," + vert + "," + diag);
-										Player2Won = true;
-										Player2Score++;
-										PScore2UI.text = Player2Score.ToString ();
-										Player2NotifyWon.gameObject.SetActive (true);
-										StartCoroutine (RestartGameTimed ());
-									}
-									int total = me + hor + vert + diag; //+ adjDiagLdown;						}
+										if (hor + me == 4 || vert + me == 4 || diag + me == 4) {
+											Debug.Log ("Player 2 vence" + hor + "," + vert + "," + diag);
+											Player2Won = true;
+											Player2Score++;
+											PScore2UI.text = Player2Score.ToString ();
+											Player2NotifyWon.gameObject.SetActive (true);
+											StartCoroutine (RestartGameTimed ());
+										}
+										int total = me + hor + vert + diag; //+ adjDiagLdown;						}
 						
-									Team = !Team;
-									if (Team) {
-										Debug.Log ("Player 1 turn (blue)");
-									} else {
-										Debug.Log ("Player 2 turn (red)");
+										Team = !Team;
+										if (Team) {
+											Debug.Log ("Player 1 turn (blue)");
+										} else {
+											Debug.Log ("Player 2 turn (red)");
+
+										}
 
 									}
-
 								}
-							}
 
+							}
 						}
-					}
-					if (numplaced == numMax) {
-						if (!Player1Won && !Player2Won) {
-							Debug.Log ("Empate");
-							EmpateNotify.gameObject.SetActive (true);
-							StartCoroutine (RestartGameTimed ());
+						if (numplaced == numMax) {
+							if (!Player1Won && !Player2Won) {
+								Debug.Log ("Empate");
+								EmpateNotify.gameObject.SetActive (true);
+								StartCoroutine (RestartGameTimed ());
+							}
 						}
 					}
 				}
