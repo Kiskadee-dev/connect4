@@ -7,6 +7,8 @@ public class BlockNeutro : Block {
 		:base()
 	{
 		blocktipe = "Neutro";
+		useocclusion = true;
+
 
 	}
 	public override Tile TexturePosition(Direction direction)

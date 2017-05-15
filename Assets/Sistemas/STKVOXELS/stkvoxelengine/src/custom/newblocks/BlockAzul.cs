@@ -7,6 +7,7 @@ public class BlockAzul : Block {
 	:base()
 	{
 		blocktipe = "Azul";
+		useocclusion = true;
 
 	}
 	public override Tile TexturePosition(Direction direction)
