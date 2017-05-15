@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class GM : MonoBehaviour {
+	[Header("Scripts necessários")]
 	public World world;
+	[Header("Instâncias")]
 	public Chunk WorkChunk;
+	[Header("Opções")]
 	public int size;
 	// Use this for initialization
 	void Start () {

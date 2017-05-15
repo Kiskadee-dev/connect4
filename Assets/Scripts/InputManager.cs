@@ -5,36 +5,78 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 public class InputManager : MonoBehaviour {
+	[Header("Opções")]
 	public bool Team = true;
 	public int range = 3;
 	public int numplaced;
 	public int numMax = 16;
 	public bool Player1Won;
 	public bool Player2Won;
+	public bool RegraComum = true;
 
+	[Header("Player Scores")]
 	public int Player1Score = 0;
 	public int Player2Score = 0;
+
+	[Header("User Interface Opções")]
+	public Toggle CheckboxRegras;
+
+	[Header("User Interface Scores")]
 	public Text PScore1UI;
 	public Text PScore2UI;
 
+	[Header("User Interface Won/Lost")]
 	public Text Player1NotifyWon;
 	public Text Player2NotifyWon;
 	public Text EmpateNotify;
 
+	[Header("User Interface Turns")]
 	public Text Player1TurnUI;
 	public Text Player2TurnUI;
 
+	[Header("Game Manager and Options")]
 	public OpenOptions Options;
 	public GM GameManager;
+
+	bool SetandoVariaveisAwake;
 	// Use this for initialization
 	void Awake(){
+		SetandoVariaveisAwake = true;
 		GameManager = GameObject.Find ("GM").GetComponent<GM> ();
+		if(PlayerPrefs.HasKey("RegrasComuns")){
+			int ba = PlayerPrefs.GetInt("RegrasComuns");
+			if(ba == 0){
+				RegraComum = false;
+				CheckboxRegras.interactable = false;
+				CheckboxRegras.isOn = false;
+				CheckboxRegras.interactable = true;
+
+			}else{
+				RegraComum = true;
+				CheckboxRegras.interactable = false;
+				CheckboxRegras.isOn = true;
+				CheckboxRegras.interactable = true;
+			}
+		}else{
+			PlayerPrefs.SetInt("RegrasComuns",1);
+			RegraComum = true;
+			CheckboxRegras.isOn = true;
+		}
 	}
 
 	void Start () {
-		
+		SetandoVariaveisAwake = false;
 	}
-	
+	public void TrocarRegraComum(){
+		if (!SetandoVariaveisAwake) {
+			RegraComum = !RegraComum;
+			if (RegraComum) {
+				PlayerPrefs.SetInt ("RegrasComuns", 1);
+			}else {
+				PlayerPrefs.SetInt ("RegrasComuns", 0);
+			}
+		}
+	}
 	// Update is called once per frame
 	void Update () {
 		if (Team) {
@@ -55,64 +97,14 @@ public class InputManager : MonoBehaviour {
 							if (bloco != null) {
 								WorldPos pos = VoxelTerrain.GetBP (hit);
 								if (Team) {
-								
-									if (bloco.blocktipe == "Neutro") {
-										Block colocado = VoxelTerrain.SetBlock (hit, new BlockAzul{ blockposition = new Vector3 (pos.x, pos.y, pos.z) });
-										numplaced++;
-										int me = 1;
-										int hor = Horizontal (colocado, "Azul");
-										int vert = Vertical (colocado, "Azul");
-										int diag = Diagonal (colocado, "Azul");
-
-										if (hor + me == 4 || vert + me == 4 || diag + me == 4) {
-											Debug.Log ("Player 1 vence" + hor + "," + vert + "," + diag);
-											Player1Won = true;
-											Player1Score++;
-											PScore1UI.text = Player1Score.ToString ();
-											Player1NotifyWon.gameObject.SetActive (true);
-											StartCoroutine (RestartGameTimed ());
-										}
-
-										int total = me + hor + vert + diag; //+ adjDiagLdown;
-
-										Team = !Team;
-										if (Team) {
-											Debug.Log ("Player 1 turn (blue)");
-										} else {
-											Debug.Log ("Player 2 turn (red)");
-
-										}
+									if (CondicaoDeVitoria (bloco, "Azul", hit, pos)) {
+										vencedor ("Azul");
 									}
 								} else {
-									if (bloco.blocktipe == "Neutro") {
-										Block colocado = VoxelTerrain.SetBlock (hit, new BlockVermelho{ blockposition = new Vector3 (pos.x, pos.y, pos.z) });
-										numplaced++;
-										int me = 1;
-										int hor = Horizontal (colocado, "Vermelho");
-										int vert = Vertical (colocado, "Vermelho");
-										int diag = Diagonal (colocado, "Vermelho");
-
-										if (hor + me == 4 || vert + me == 4 || diag + me == 4) {
-											Debug.Log ("Player 2 vence" + hor + "," + vert + "," + diag);
-											Player2Won = true;
-											Player2Score++;
-											PScore2UI.text = Player2Score.ToString ();
-											Player2NotifyWon.gameObject.SetActive (true);
-											StartCoroutine (RestartGameTimed ());
-										}
-										int total = me + hor + vert + diag; //+ adjDiagLdown;						}
-						
-										Team = !Team;
-										if (Team) {
-											Debug.Log ("Player 1 turn (blue)");
-										} else {
-											Debug.Log ("Player 2 turn (red)");
-
-										}
-
+									if (CondicaoDeVitoria (bloco, "Vermelho", hit, pos)) {
+										vencedor ("Vermelho");
 									}
 								}
-
 							}
 						}
 						if (numplaced == numMax) {
@@ -127,6 +119,114 @@ public class InputManager : MonoBehaviour {
 			}
 		}
 	}
+	public bool CondicaoDeVitoria(Block bloco, string time, RaycastHit hit,WorldPos pos){
+		if (RegraComum) {
+			if (bloco.blocktipe == "Neutro") {
+				if (time == "Azul") {
+					Block colocado = VoxelTerrain.SetBlock (hit, new BlockAzul{ blockposition = new Vector3 (pos.x, pos.y, pos.z) });
+					numplaced++;
+					int me = 1;
+					int hor = Horizontal (colocado, time);
+					int vert = Vertical (colocado, time);
+					int diag = Diagonal (colocado, time);
+					int diag2 = Diagonal2 (colocado, time);
+
+					if (hor + me == 4 || vert + me == 4 || diag + me == 4 || diag2 + me == 4) {
+						return true;
+					}
+					Team = !Team;
+					if (Team) {
+						Debug.Log ("Player 1 turn (blue)");
+					} else {
+						Debug.Log ("Player 2 turn (red)");
+
+					}
+					return false;
+				} else {
+					Block colocado = VoxelTerrain.SetBlock (hit, new BlockVermelho{ blockposition = new Vector3 (pos.x, pos.y, pos.z) });
+					numplaced++;
+					int me = 1;
+					int hor = Horizontal (colocado, time);
+					int vert = Vertical (colocado, time);
+					int diag = Diagonal (colocado, time);
+					int diag2 = Diagonal2 (colocado, time);
+
+					if (hor + me == 4 || vert + me == 4 || diag + me == 4 || diag2 + me == 4) {
+						return true;
+					}
+					Team = !Team;
+					if (Team) {
+						Debug.Log ("Player 1 turn (blue)");
+					} else {
+						Debug.Log ("Player 2 turn (red)");
+
+					}
+					return false;
+				}
+			}
+		} else {
+			if (bloco.blocktipe == "Neutro") {
+				if (time == "Azul") {
+					Block colocado = VoxelTerrain.SetBlock (hit, new BlockAzul{ blockposition = new Vector3 (pos.x, pos.y, pos.z) });
+					numplaced++;
+					int me = 1;
+					int hor = Horizontal (colocado, time);
+					int vert = Vertical (colocado, time);
+					int diag = Diagonal (colocado, time);
+					int diag2 = Diagonal2 (colocado, time);
+
+					if (hor + vert + diag + diag2 + me >= 4) {
+						return true;
+					}
+					Team = !Team;
+					if (Team) {
+						Debug.Log ("Player 1 turn (blue)");
+					} else {
+						Debug.Log ("Player 2 turn (red)");
+
+					}
+					return false;
+				} else {
+					Block colocado = VoxelTerrain.SetBlock (hit, new BlockVermelho{ blockposition = new Vector3 (pos.x, pos.y, pos.z) });
+					numplaced++;
+					int me = 1;
+					int hor = Horizontal (colocado, time);
+					int vert = Vertical (colocado, time);
+					int diag = Diagonal (colocado, time);
+					int diag2 = Diagonal2 (colocado, time);
+
+					if (hor + vert + diag + diag2 + me >= 4) {
+						return true;
+					}
+					Team = !Team;
+					if (Team) {
+						Debug.Log ("Player 1 turn (blue)");
+					} else {
+						Debug.Log ("Player 2 turn (red)");
+
+					}
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+	public void vencedor(string time){
+		if (time == "Azul") {
+			Player1Won = true;
+			Player1Score++;
+			PScore1UI.text = Player1Score.ToString ();
+			Player1NotifyWon.gameObject.SetActive (true);
+			StartCoroutine (RestartGameTimed ());
+		} else {
+			Player2Won = true;
+			Player2Score++;
+			PScore2UI.text = Player1Score.ToString ();
+			Player2NotifyWon.gameObject.SetActive (true);
+			StartCoroutine (RestartGameTimed ());
+		}
+	}
+
 	public IEnumerator RestartGameTimed(){
 		yield return new WaitForSeconds (4);
 		RestartGame ();
@@ -171,19 +271,18 @@ public class InputManager : MonoBehaviour {
 		if (soma1 < 0) {
 			soma1 = 0;
 		}
-
+		return soma1;
+	
+	}
+	public int Diagonal2(Block colocado,string time){
 		int adjDiagLup = WinConditionDiagLeft (colocado, time) -1;
 		int adjDiagLdown = WinConditionDiagDownLeft (colocado, time) - 1;
-	
+
 		int soma2 = adjDiagLup + adjDiagLdown;
 		if (soma2 < 0) {
 			soma2 = 0;
 		}
-
-
-		int result = soma1 + soma2;
-		return result;
-	
+		return soma2;
 	}
 
 
