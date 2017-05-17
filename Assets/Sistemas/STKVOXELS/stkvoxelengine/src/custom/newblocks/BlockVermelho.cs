@@ -16,7 +16,7 @@ public class BlockVermelho : Block {
 		//não pode trocar, é grama uai;
 		Tile tile = new Tile ();
 
-		tile.x = 0;
+		tile.x = 2;
 		tile.y = 0;
 		return tile;
 	}

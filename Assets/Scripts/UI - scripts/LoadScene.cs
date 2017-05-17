@@ -20,6 +20,7 @@ public class LoadScene : MonoBehaviour {
 		SceneManager.LoadScene (0);
 	}
 	public void QuitGame(){
-		Application.Quit ();
+		//Application.Quit ();
+		System.Diagnostics.Process.GetCurrentProcess().Kill();
 	}
 }

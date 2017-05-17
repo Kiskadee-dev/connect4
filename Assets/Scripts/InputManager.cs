@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.Analytics;
 public class InputManager : MonoBehaviour {
 	[Header("Opções")]
 	public bool Team = true;
@@ -44,18 +45,20 @@ public class InputManager : MonoBehaviour {
 		SetandoVariaveisAwake = true;
 		GameManager = GameObject.Find ("GM").GetComponent<GM> ();
 		if(PlayerPrefs.HasKey("RegrasComuns")){
-			int ba = PlayerPrefs.GetInt("RegrasComuns");
-			if(ba == 0){
+			int RegrasComuns = PlayerPrefs.GetInt("RegrasComuns");
+			if(RegrasComuns == 0){
 				RegraComum = false;
 				CheckboxRegras.interactable = false;
 				CheckboxRegras.isOn = false;
 				CheckboxRegras.interactable = true;
-
+				Analytics.CustomEvent ("Usando regras alternativas");
 			}else{
 				RegraComum = true;
 				CheckboxRegras.interactable = false;
 				CheckboxRegras.isOn = true;
 				CheckboxRegras.interactable = true;
+				Analytics.CustomEvent ("Usando regras comuns");
+
 			}
 		}else{
 			PlayerPrefs.SetInt("RegrasComuns",1);
@@ -72,8 +75,12 @@ public class InputManager : MonoBehaviour {
 			RegraComum = !RegraComum;
 			if (RegraComum) {
 				PlayerPrefs.SetInt ("RegrasComuns", 1);
+				Analytics.CustomEvent ("Jogador ativou as regras comuns");
+
 			}else {
 				PlayerPrefs.SetInt ("RegrasComuns", 0);
+				Analytics.CustomEvent ("Jogador ativou as regras alternativas");
+
 			}
 		}
 	}
@@ -218,12 +225,16 @@ public class InputManager : MonoBehaviour {
 			PScore1UI.text = Player1Score.ToString ();
 			Player1NotifyWon.gameObject.SetActive (true);
 			StartCoroutine (RestartGameTimed ());
+			//analitics
+			Analytics.CustomEvent("Player 1 venceu");
 		} else {
 			Player2Won = true;
 			Player2Score++;
 			PScore2UI.text = Player1Score.ToString ();
 			Player2NotifyWon.gameObject.SetActive (true);
 			StartCoroutine (RestartGameTimed ());
+
+			Analytics.CustomEvent("Player 2 venceu");
 		}
 	}
 
@@ -524,5 +535,11 @@ public class InputManager : MonoBehaviour {
 
 		return AdjacentRight;
 
+	}
+	public void SendAnalytics(){
+		Analytics.CustomEvent ("Resultado da partida",new Dictionary<string,object>{
+			{"jogador1",Player1Score},
+			{"jogador2", Player2Score}
+		});
 	}
 }
