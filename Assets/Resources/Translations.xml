@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<languages>
+	<Portuguese>
+	<string name="app_name">Múltiplas Linguagens com Unity</string>
+	<string name="description">Este script provine suporte para múltiplas linguagens de modo conveniente</string>
+	<string name="regras">O Jogo começa com o tabuleiro vazio. 
+
+Os jogadores jogam alternadamente, começando a partida a partir do jogador com os blocos azuis. O objetivo é ligar um bloco a outros 3 blocos de mesma cor, podendo ser na vertical, horizontal ou diagonail.
+Só é contado apartir do último bloco colocado. </string>
+<string name="titulo">Conectar 4</string>
+<string name="playbutton">2 Jogadores</string>
+<string name="quitbutton">Sair</string>
+<string name="score">Pontos: </string>
+<string name="paused">Pausado!</string>
+<string name="backmenu">Voltar ao menu</string>
+<string name ="restartgame">Reiniciar jogo</string>
+<string name = "alternaterulestitle">Alternar Regras</string>
+<string name = "toggleRC">Regras Comuns</string>
+<string name = "otherRules">Diferente das regras comuns, quando desativado, os cubos passam a contar qualquer bloco adjacente de mesma cor.</string>
+<string name = "jogador1">Jogador 1</string>
+<string name = "jogador2">Jogador 2</string>
+<string name = "empate">Empate</string>
+<string name = "player1won">Jogador 1 Venceu!</string>
+<string name = "player2won">Jogador 2 Venceu!</string>
+
+	</Portuguese>
+	<English>
+     	<string name="app_name">Unity Multiple Language Support</string>
+		<string name="description">This script provides convenient multiple language support.</string>
+		<string name="regras">The Game starts with the empty board.
+
+The players play alternately, starting the match from the player with the blue blocks. The objective is to connect a block to other 3 blocks of the same color, being able to be vertical, horizontal or diagonail.
+It is only counted from the last block placed.</string>
+<string name="titulo">Connect 4</string>
+<string name="playbutton">2 Players</string>
+<string name="quitbutton">Quit</string>
+<string name="score">Score: </string>
+<string name="paused">Paused!</string>
+<string name="backmenu">Back to main menu</string>
+<string name ="restartgame">Restart match</string>
+<string name = "alternaterulestitle">Alternate Rules</string>
+<string name = "toggleRC">Common rules</string>
+<string name = "otherRules">Unlike common rules, when deactivated, the cubes will count any adjacent blocks of the same color.</string>
+<string name = "jogador1">Player 1</string>
+<string name = "jogador2">Player 2</string>
+<string name = "empate">A tie</string>
+<string name = "player1won">Player 1 Won!</string>
+<string name = "player2won">Player 2 Won!</string>
+	</English>
+
+	<French>
+		<string name="app_name">Unité Langue Soutien Multiple</string>
+		<string name="description">Ce script fournit un soutien multilingue pratique.</string>
+	</French>
+
+	<German>
+		<string name="app_name">Unity Unterstützung Mehrerer Sprachen</string>
+		<string name="description">Dieses Skript bietet komfortable Unterstützung für mehrere Sprachen.</string>
+	</German>
+</languages>
