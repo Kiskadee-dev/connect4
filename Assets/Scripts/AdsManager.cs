@@ -29,16 +29,15 @@ public class AdsManager : MonoBehaviour {
 
 	void tryuntilready(){
 		if (!showed) {
-			Debug.Log ("Not shown, trying again");
 			StarterAd ();
 		}
 	}
 
 	public void ShowAd()
 	{
-		Debug.Log ("Showing Ads");
 		if (Advertisement.IsReady())
 		{
+			Debug.Log ("Showing Ads");
 			Advertisement.Show();
 		}
 	}

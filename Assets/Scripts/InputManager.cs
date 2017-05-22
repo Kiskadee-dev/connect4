@@ -118,6 +118,7 @@ public class InputManager : MonoBehaviour {
 							if (!Player1Won && !Player2Won) {
 								Debug.Log ("Empate");
 								EmpateNotify.gameObject.SetActive (true);
+								Analytics.CustomEvent ("Empatou");
 								StartCoroutine (RestartGameTimed ());
 							}
 						}
@@ -230,7 +231,7 @@ public class InputManager : MonoBehaviour {
 		} else {
 			Player2Won = true;
 			Player2Score++;
-			PScore2UI.text = Player1Score.ToString ();
+			PScore2UI.text = Player2Score.ToString ();
 			Player2NotifyWon.gameObject.SetActive (true);
 			StartCoroutine (RestartGameTimed ());
 
